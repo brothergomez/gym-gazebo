@@ -8,9 +8,6 @@
     <arg name="gui" value="$(arg gui)" />
   </include>
   
-  <include file="$(find mekamon)/launch/includes/$(arg base).launch.xml">
-  </include>
-  
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
     <param name="publish_frequency" type="double" value="30.0" />
   </node>
