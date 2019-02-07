@@ -13,12 +13,11 @@ from gym.utils import seeding
 class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
     def __init__(self):
-        pass
+        gazebo_env.GazeboEnv.__init__(self, "GazeboMekamon_v0.launch")
         
     def step(self, action):
-
+        """
          Parameters
-        ----------
         action :
 
         Returns
