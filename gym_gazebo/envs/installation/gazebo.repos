@@ -156,3 +156,11 @@ repositories:
     type: git
     url: https://github.com/yujinrobot/yujin_ocs
     version: devel
+  mekamon_msgs:
+    type: git
+    url: https://bitbucket.org/...
+    version: master
+  mekamon_urdf:
+    type: git
+    url: https://bitbucket.org/...
+    version: master
