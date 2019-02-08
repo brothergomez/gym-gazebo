@@ -30,7 +30,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
         low = -np.pi/2.0 * np.ones(12)
         high = np.pi/2.0 * np.ones(12)
 
-        self.action_space = spaces.Box(low, high)
+        self.action_space = spaces.Box(low, high, dtype='float32')
 
         INITIAL_JOINTS = np.zeros(12)
 
@@ -69,14 +69,14 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
             'initial_velocities': []
         }
 
-        self._pub = rospy.Publisher(JOINT_PUBLISHER, JointTrajectory)
+        self._pub = rospy.Publisher(JOINT_PUBLISHER, JointTrajectory, queue_size=1)
         self._sub = rospy.Subscriber(
             JOINT_SUBSCRIBER, JointTrajectoryControllerState, self.observation_callback)
 
         self.obs_dim = 12
         high = np.inf*np.ones(self.obs_dim)
         low = -high
-        self.observation_space = spaces.Box(low, high)
+        self.observation_space = spaces.Box(low, high, dtype='float32')
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
