@@ -1,1 +1,1 @@
-from gym_gazebo.envs.mekamon.mekamon.py import GazeboMekamonEnv
+from gym_gazebo.envs.mekamon.mekamon import GazeboMekamonEnv

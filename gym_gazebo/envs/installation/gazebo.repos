@@ -1,4 +1,7 @@
 repositories:
+#
+#   Comment out some packages for simplicity
+#
 #  ardupilot_sitl_gazebo_plugin:
 #    type: git
 #    url: https://github.com/erlerobot/ardupilot_sitl_gazebo_plugin
@@ -24,26 +27,26 @@ repositories:
 #    type: hg
 #    url: https://bitbucket.org/osrf/drcsim
 #    version: default
-  ecl_core:
-    type: git
-    url: https://github.com/stonier/ecl_core
-    version: devel
-  ecl_lite:
-    type: git
-    url: https://github.com/stonier/ecl_lite
-    version: devel
-  ecl_navigation:
-    type: git
-    url: https://github.com/stonier/ecl_navigation
-    version: devel
-  ecl_tools:
-    type: git
-    url: https://github.com/stonier/ecl_tools
-    version: devel
-  driver_base:
-    type: git
-    url: https://github.com/ros-drivers/driver_common.git
-    version: indigo-devel
+#  ecl_core:
+#    type: git
+#    url: https://github.com/stonier/ecl_core
+#    version: devel
+#  ecl_lite:
+#    type: git
+#    url: https://github.com/stonier/ecl_lite
+#    version: devel
+#  ecl_navigation:
+#    type: git
+#    url: https://github.com/stonier/ecl_navigation
+#    version: devel
+#  ecl_tools:
+#    type: git
+#    url: https://github.com/stonier/ecl_tools
+#    version: devel
+#  driver_base:
+#    type: git
+#    url: https://github.com/ros-drivers/driver_common.git
+#    version: indigo-devel
   gazebo_ros_pkgs:
     type: git
     url: https://github.com/ros-simulation/gazebo_ros_pkgs
@@ -64,22 +67,22 @@ repositories:
     type: git
     url: https://github.com/ros-drivers/joystick_drivers.git
     version: indigo-devel
-  kobuki:
-    type: git
-    url: https://github.com/yujinrobot/kobuki
-    version: indigo
-  kobuki_core:
-    type: git
-    url: https://github.com/yujinrobot/kobuki_core
-    version: indigo
-  kobuki_desktop:
-    type: git
-    url: https://github.com/erlerobot/kobuki_desktop
-    version: indigo
-  kobuki_msgs:
-    type: git
-    url: https://github.com/yujinrobot/kobuki_msgs
-    version: indigo
+#  kobuki:
+#    type: git
+#    url: https://github.com/yujinrobot/kobuki
+#    version: indigo
+#  kobuki_core:
+#    type: git
+#    url: https://github.com/yujinrobot/kobuki_core
+#    version: indigo
+#  kobuki_desktop:
+#    type: git
+#    url: https://github.com/erlerobot/kobuki_desktop
+#    version: indigo
+#  kobuki_msgs:
+#    type: git
+#    url: https://github.com/yujinrobot/kobuki_msgs
+#    version: indigo
 #  mavros:
 #    type: git
 #    url: https://github.com/erlerobot/mavros.git
@@ -132,35 +135,35 @@ repositories:
 #    type: git
 #    url: https://github.com/ros-visualization/rqt_robot_plugins
 #    version: master
-  turtlebot:
-    type: git
-    url: https://github.com/turtlebot/turtlebot
-    version: indigo
-  turtlebot_create:
-    type: git
-    url: https://github.com/turtlebot/turtlebot_create
-    version: indigo
-  turtlebot_simulator:
-    type: git
-    url: https://github.com/turtlebot/turtlebot_simulator
-    version: indigo
+#  turtlebot:
+#    type: git
+#    url: https://github.com/turtlebot/turtlebot
+#    version: indigo
+#  turtlebot_create:
+#    type: git
+#    url: https://github.com/turtlebot/turtlebot_create
+#    version: indigo
+#  turtlebot_simulator:
+#    type: git
+#    url: https://github.com/turtlebot/turtlebot_simulator
+#    version: indigo
   xacro:
     type: git
     url: https://github.com/ros/xacro
     version: indigo-devel
-  yocs_msgs:
-    type: git
-    url: https://github.com/yujinrobot/yocs_msgs
-    version: devel
-  yujin_ocs:
-    type: git
-    url: https://github.com/yujinrobot/yujin_ocs
-    version: devel
+#  yocs_msgs:
+#    type: git
+#    url: https://github.com/yujinrobot/yocs_msgs
+#    version: devel
+#  yujin_ocs:
+#    type: git
+#    url: https://github.com/yujinrobot/yujin_ocs
+#    version: devel
   mekamon_msgs:
     type: git
-    url: https://bitbucket.org/...
+    url: https://bitbucket.org/reachrobotics/msm-ros-mekamon_msgs
     version: master
   mekamon_urdf:
     type: git
-    url: https://bitbucket.org/...
+    url: https://bitbucket.org/reachrobotics/msm-ros-mekamon_urdf
     version: master

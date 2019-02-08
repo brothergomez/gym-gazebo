@@ -10,12 +10,22 @@ from std_srvs.srv import Empty
 
 from gym.utils import seeding
 
+
 class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
     def __init__(self):
         gazebo_env.GazeboEnv.__init__(self, "GazeboMekamon_v0.launch")
-        
-    def step(self, action):
+        self.unpause = rospy.ServiceProxy('/gazebo/unpause_physics', Empty)
+        self.pause = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
+        self.reset_proxy = rospy.ServiceProxy(
+            '/gazebo/reset_simulation', Empty)
+
+        self.action_space = spaces.Discrete(3)  # F,L,R
+        self.reward_range = (-np.inf, np.inf)
+
+        self._seed()
+
+    def _step(self, action):
         """
          Parameters
         action :
@@ -42,25 +52,36 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
                  However, official evaluations of your agent are not allowed to
                  use this for learning.
         """
-        self._take_action(action)
-        self.status = self.env.step()
-        reward = self._get_reward()
-        ob = self.env.getState()
-        episode_over = self.status != hfo_py.IN_GAME
-        return ob, reward, episode_over, {}
-    def reset(self):
-        pass
-       def _render(self, mode='human', close=False):
-        pass
+        rospy.wait_for_service('/gazebo/unpause_physics')
+        try:
+            self.unpause()
+        except (rospy.ServiceException) as e:
+            print("/gazebo/unpause_physics service call failed")
+        return None
 
-    def _take_action(self, action):
-        pass
+    def _reset(self):
 
-    def _get_reward(self):
-        """ Reward is given for XY. """
-        if self.status == 1:
-            return 1
-        elif self.status == 2:
-            return self.somestate ** 2
-        else:
-            return 0
+        # Resets the state of the environment and returns an initial observation.
+        rospy.wait_for_service('/gazebo/reset_simulation')
+        try:
+            # reset_proxy.call()
+            self.reset_proxy()
+        except (rospy.ServiceException) as e:
+            print("/gazebo/reset_simulation service call failed")
+
+        # Unpause simulation to make observation
+        rospy.wait_for_service('/gazebo/unpause_physics')
+        try:
+            #resp_pause = pause.call()
+            self.unpause()
+        except (rospy.ServiceException) as e:
+            print("/gazebo/unpause_physics service call failed")
+
+        rospy.wait_for_service('/gazebo/pause_physics')
+        try:
+            #resp_pause = pause.call()
+            self.pause()
+        except (rospy.ServiceException) as e:
+            print("/gazebo/pause_physics service call failed")
+
+        return None

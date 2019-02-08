@@ -1,1 +1,289 @@
- <!-- TODO insert stuff -->
+<?xml version="1.0"?>
+<robot name="mekamon" 
+  xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- units are metres & Kg-->
+
+  <xacro:property name="body_x" value="0.115" />
+  <xacro:property name="body_y" value="0.115" />
+  <xacro:property name="body_z" value="0.075" />
+
+  <xacro:property name="headradius" value="0.025" />
+
+  <!-- all leg parts can have same width & height, just vary length -->
+  <xacro:property name="legwidth" value="0.03" />
+  <xacro:property name="legheight" value="0.03" />
+  <xacro:property name="hiplength" value="0.04" />
+  <!-- from socket to hip joint -->
+  <xacro:property name="hiplinklength" value="0.03" />
+  <!-- link from hip to thigh -->
+  <xacro:property name="thighlength" value="0.09" />
+  <!-- from thigh joint to knee joint -->
+  <xacro:property name="foreleglength" value="0.105" />
+  <!-- from knee joint to foot -->
+  <xacro:property name="footradius" value="0.02" />
+  <!-- foot sphere -->
+
+
+  <xacro:property name="pi" value="3.1415" />
+
+
+  <material name="body">
+    <color rgba="1.0 1.0 1.0 1"/>
+  </material>
+
+  <material name="head">
+    <color rgba="0.1 0.1 0.9 1"/>
+  </material>
+
+  <material name="hip">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+
+  <material name="hiplink">
+    <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+
+  <material name="thigh">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+
+  <material name="foreleg">
+    <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+
+  <material name="foot">
+    <color rgba="0.9 0.9 0.9 0.9"/>
+  </material>
+
+
+  <!-- Standard moment of inertia tensor for solid sphere -->
+  <xacro:macro name="sphere_inertial" params="mass radius">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="${0.4 * mass * radius * radius}" ixy="0.0" ixz="0.0" iyy="${0.4 * mass * radius * radius}" iyz="0.0" izz="${0.4 * mass * radius * radius}" />
+    </inertial>
+  </xacro:macro>
+
+  <!-- Standard moment of inertia tensor for solid cuboid -->
+  <xacro:macro name="box_inertial" params="mass x y z">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="${0.0833333 * mass * (y*y + z*z)}" ixy="0.0" ixz="0.0" iyy="${0.0833333 * mass * (x*x + z*z)}" iyz="0.0" izz="${0.0833333 * mass * (x*x + y*y)}" />
+    </inertial>
+  </xacro:macro>
+
+  <!-- base coordinate frame link is not a physical object -->
+  <link name="base_link"/>
+
+  <!-- base link needs a fixed joint to first real link -->
+  <joint name="base_link_fixedjoint" type="fixed">
+    <parent link="base_link"/>
+    <child link="body"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+  </joint>
+
+  <!-- central body (first real link) -->
+  <link name="body">
+    <visual>
+      <geometry>
+        <box size="${body_x} ${body_y} ${body_z}"/>
+      </geometry>
+      <material name="body"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${body_x} ${body_y} ${body_z}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="0.5" x="${body_x}" y="${body_y}" z="${body_z}"/>
+  </link>
+
+  <!-- Head -->
+  <link name="head">
+    <visual>
+      <geometry>
+        <sphere radius="${headradius}"/>
+      </geometry>
+      <material name="head"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${headradius}"/>
+      </geometry>
+    </collision>
+    <xacro:sphere_inertial mass="0.01" radius="${headradius}"/>
+  </link>
+
+  <!-- body-to-head static joint -->
+  <joint name="body_to_head" type="fixed">
+    <parent link="body"/>
+    <child link="head"/>
+    <origin xyz="0.03 0.00 0.04" />
+  </joint>
+
+  <!-- Leg builder macro 
+  arg 'prefix' is link name prefix.
+  args 'reflect' used in leg placement. -->
+  <xacro:macro name="leg" params="prefix reflect_x reflect_y hipangle">
+
+    <!-- body-to-hip static joint -->
+    <joint name="body_to_${prefix}_hip" type="fixed">
+      <parent link="body"/>
+      <child link="${prefix}_hip"/>
+      <!-- Where this joint attaches to the parent link,
+      relative to previous joint origin -->
+      <origin xyz="${reflect_x*0.04} ${reflect_y*0.04} -0.025" rpy="0 0 ${pi/4 + hipangle*pi/2}"/>
+    </joint>
+
+    <!-- Hip, containing servo -->
+    <link name="${prefix}_hip">
+      <visual>
+        <geometry>
+          <!--length, width, height-->
+          <box size="${hiplength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <!-- Where we want the link centre to be, relative to the joint? -->
+        <origin xyz="${hiplength/2} 0 0" rpy="0 0 0"/>
+        <material name="hip"/>
+      </visual>
+      <collision>
+        <!--same as visual geometry -->
+        <geometry>
+          <box size="${hiplength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <!--same as visual geometry -->
+        <origin xyz="${hiplength/2} 0 0" rpy="0 0 0"/>
+      </collision>
+      <xacro:box_inertial mass="0.02" x="${hiplength}" y="${legwidth}" z="${legheight}" />
+    </link>
+
+    <!-- hip-to-hiplink joint -->
+    <joint name="${prefix}_hip_joint" type="revolute">
+      <axis xyz="0 0 1"/>
+      <limit effort="1000.0" lower="-${pi/3}" upper="${pi/3}" velocity="0.5"/>
+      <!-- Where this joint attaches to the parent link,
+      relative to previous joint origin -->
+      <origin rpy="0 0 0" xyz="${hiplength} 0 0"/>
+      <parent link="${prefix}_hip"/>
+      <child link="${prefix}_hiplink"/>
+    </joint>
+
+    <!-- Hiplink - small passive right-angle link -->
+    <link name="${prefix}_hiplink">
+      <visual>
+        <geometry>
+          <box size="${hiplinklength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <origin xyz="${hiplinklength/2} 0 0" rpy="0 0 0"/>
+        <material name="hiplink"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="${hiplinklength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <origin xyz="${hiplinklength/2} 0 0" rpy="0 0 0"/>
+      </collision>
+      <xacro:box_inertial mass="0.01" x="${hiplinklength}" y="${legwidth}" z="${legheight}" />
+    </link>
+
+    <!-- hiplink-to-thigh joint -->
+    <joint name="${prefix}_hiplink_joint" type="revolute">
+      <axis xyz="0 1 0"/>
+      <limit effort="1000.0" lower="-1.396" upper="1.484" velocity="0.5"/>
+      <!-- Where this joint attaches to the parent link,
+      relative to previous joint origin -->
+      <origin rpy="0 0 0" xyz="${hiplinklength} 0 0"/>
+      <parent link="${prefix}_hiplink"/>
+      <child link="${prefix}_thigh"/>
+    </joint>
+
+    <!-- Thigh -->
+    <link name="${prefix}_thigh">
+      <visual>
+        <geometry>
+          <box size="${thighlength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <origin xyz="${thighlength/2} 0 0" rpy="0 0 0"/>
+        <material name="thigh"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="${thighlength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <origin xyz="${thighlength/2} 0 0" rpy="0 0 0"/>
+      </collision>
+      <xacro:box_inertial mass="0.05" x="${thighlength}" y="${legwidth}" z="${legheight}" />
+    </link>
+
+    <!-- Knee, thigh-to-foreleg joint -->
+    <joint name="${prefix}_knee_joint" type="revolute">
+      <axis xyz="0 1 0"/>
+      <limit effort="1000.0" lower="-1.169" upper="1.274" velocity="0.5"/>
+      <!-- Where this joint attaches to the parent link,
+      relative to previous joint origin -->
+      <origin rpy="0 0 0" xyz="${thighlength} 0 0"/>
+      <parent link="${prefix}_thigh"/>
+      <child link="${prefix}_foreleg"/>
+    </joint>
+
+    <!-- Foreleg -->
+    <link name="${prefix}_foreleg">
+      <visual>
+        <geometry>
+          <box size="${foreleglength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <!-- translation of origin is relative to pre-rotation frame,
+        so x-trans is done as z-trans-->
+        <origin rpy="0 ${pi/2} 0" xyz="0 0 -${foreleglength/2}" />
+        <material name="foreleg"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="${foreleglength} ${legwidth} ${legheight}"/>
+        </geometry>
+        <origin rpy="0 ${pi/2} 0" xyz="0 0 -${foreleglength/2}" />
+      </collision>
+      <xacro:box_inertial mass="0.03" x="${foreleglength}" y="${legwidth}" z="${legheight}" />
+    </link>
+
+    <!-- Foreleg to Foot static joint -->
+    <joint name="${prefix}_ankle" type="fixed">
+      <parent link="${prefix}_foreleg"/>
+      <child link="${prefix}_foot"/>
+      <!-- Where this joint attaches to the parent link,
+      relative to previous joint origin -->
+      <origin xyz="0 0 -${foreleglength}" rpy="0 0 0"/>
+    </joint>
+
+
+    <!-- Foot -->
+    <link name="${prefix}_foot">
+      <visual>
+        <geometry>
+          <sphere radius="${footradius}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <material name="foot"/>
+      </visual>
+      <collision>
+        <geometry>
+          <sphere radius="${footradius}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </collision>
+      <xacro:sphere_inertial mass="0.01" radius="${footradius}"/>
+    </link>
+
+  </xacro:macro>
+
+  <!-- instantiate legs -->
+
+  <xacro:leg prefix="fl" reflect_x="1" reflect_y="1" hipangle="0" />
+  <xacro:leg prefix="fr" reflect_x="1" reflect_y="-1" hipangle="3" />
+  <xacro:leg prefix="bl" reflect_x="-1" reflect_y="1" hipangle="1" />
+  <xacro:leg prefix="br" reflect_x="-1" reflect_y="-1" hipangle="2" />
+
+
+
+</robot>
