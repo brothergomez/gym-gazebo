@@ -34,9 +34,9 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
         INITIAL_JOINTS = np.zeros(12)
 
-        JOINT_PUBLISHER = JointAngles()
-        JOINT_SUBSCRIBER = JointAngles()
-
+        JOINT_PUBLISHER = "mekamon_msgs/command"
+        JOINT_SUBSCRIBER = "mekamon_msgs/state"
+        
         fl_hip_joint = "fl_hip_joint"
         fl_hiplink_joint = "fl_hiplink_joint"
         fl_knee_joint = "fl_knee_joint"
