@@ -15,7 +15,7 @@
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="0.0"/>
 
-  <param name="robot_description" command="$(find xacro)/xacro '$(find mekamon_urdf)/urdf/mekamon_gazebo.urdf.xacro'" />
+  <param name="robot_description" command="$(find xacro)/xacro '$(find mekamon_urdf)/urdf/mekamon.urdf.xacro'" />
 
   <node name="spawn_mekamon_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model mekamon
               -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) 

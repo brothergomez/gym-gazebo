@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<robot name="mekamon" 
-  xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="mekamon" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <!-- units are metres & Kg-->
 
