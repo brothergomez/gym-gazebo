@@ -36,7 +36,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
         JOINT_PUBLISHER = "mekamon_msgs/command"
         JOINT_SUBSCRIBER = "mekamon_msgs/state"
-        
+
         fl_hip_joint = "fl_hip_joint"
         fl_hiplink_joint = "fl_hiplink_joint"
         fl_knee_joint = "fl_knee_joint"
@@ -111,7 +111,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
             # print("last_observations is empty")
             return None
 
-    def _step(self, action):
+    def step(self, action):
         rospy.wait_for_service('/gazebo/unpause_physics')
         try:
             self.unpause()
@@ -127,7 +127,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
                     pass
         return None
 
-    def _reset(self):
+    def reset(self):
 
         # Resets the state of the environment and returns an initial observation.
         rospy.wait_for_service('/gazebo/pause_physics')
