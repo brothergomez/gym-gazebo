@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot name="mekamon_gazebo" 
+    xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <gazebo reference="body">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+</robot>

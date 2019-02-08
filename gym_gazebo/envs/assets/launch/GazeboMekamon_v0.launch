@@ -8,9 +8,18 @@
     <arg name="gui" value="$(arg gui)" />
   </include>
 
-  <param name="robot_description" command="$(find xacro)/xacro '$(find mekamon_urdf)/urdf/mekamon.urdf.xacro'" />
+  <arg name="x_pos" default="0.0"/>
+  <arg name="y_pos" default="0.0"/>
+  <arg name="z_pos" default="0.0"/>
+  <arg name="roll" default="0.0"/>
+  <arg name="pitch" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
 
-  <node name="spawn_mekamon_model" pkg="gazebo_ros" type="spawn_model" args="$(optenv ROBOT_INITIAL_POSE) -unpause -urdf -param robot_description -model mekamon"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find mekamon_urdf)/urdf/mekamon_gazebo.urdf.xacro'" />
+
+  <node name="spawn_mekamon_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model mekamon
+              -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) 
+              -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
 
   <!-- ignore_timestamp=true: 
         don't publish at fixed rate, publish whenever a JointState msg comes in -->
