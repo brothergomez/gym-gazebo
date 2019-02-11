@@ -38,8 +38,8 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
         INITIAL_JOINTS = np.zeros(12)
 
-        JOINT_PUBLISHER = "mekamon_msgs/command"
-        JOINT_SUBSCRIBER = "mekamon_msgs/state"
+        JOINT_PUBLISHER = "mekamon_msgs/JointAngles"
+        JOINT_SUBSCRIBER = "mekamon_msgs/JointAngles"
 
         fl_hip_joint = "fl_hip_joint"
         fl_hiplink_joint = "fl_hiplink_joint"
@@ -56,46 +56,32 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
         body = "body"
         head = "head"
 
-        JOINT_ORDER = [fl_hip_joint,
+        JOINT_ORDER = [fl_knee_joint,
+                       fl_hip_joint,
                        fl_hiplink_joint,
-                       fl_knee_joint,
+                       fr_knee_joint,
                        fr_hip_joint,
                        fr_hiplink_joint,
-                       fr_knee_joint,
+                       bl_knee_joint,
                        bl_hip_joint,
                        bl_hiplink_joint,
-                       bl_knee_joint,
+                       br_knee_joint,
                        br_hip_joint,
-                       br_hiplink_joint,
-                       br_knee_joint]
+                       br_hiplink_joint
+                       ]
         reset_condition = {
             'initial_positions': INITIAL_JOINTS,
             'initial_velocities': []
         }
 
         self._pub = rospy.Publisher(
-            JOINT_PUBLISHER, JointTrajectory, queue_size=1)
+            JOINT_PUBLISHER, JointAngles, queue_size=1)
         self._sub = rospy.Subscriber(
-            JOINT_SUBSCRIBER, JointTrajectoryControllerState, self.observation_callback)
-
-        self.obs_dim = 12
-        high = np.inf*np.ones(self.obs_dim)
-        low = -high
-        self.observation_space = spaces.Box(low, high, dtype='float32')
+            JOINT_SUBSCRIBER, JointAngles, self.observation_callback)
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
-
-    def init_time(self, slowness=1, slowness_unit='sec', reset_jnts=True):
-        self.slowness = slowness
-        self.slowness_unit = slowness_unit
-        self.reset_jnts = reset_jnts
-        print("slowness: ", self.slowness)
-        print("slowness_unit: ", self.slowness_unit,
-              "type of variable: ", type(slowness_unit))
-        print("reset joints: ", self.reset_jnts,
-              "type of variable: ", type(self.reset_jnts))
 
     def observation_callback(self, message):
         """
