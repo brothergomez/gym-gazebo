@@ -2,7 +2,7 @@
 FROM ubuntu:16.04
 
 #--------------------
-# General setup
+# General setup
 #--------------------
 
 # Get the dependencies
@@ -33,7 +33,7 @@ RUN apt-get update \
 WORKDIR /usr/local/gym
 
 #--------------------
-# Install gym
+# Install gym
 #--------------------
 
 # # Clone the official gym
@@ -74,7 +74,7 @@ RUN apt-get install -y libgazebo8-dev
 EXPOSE 11345
 
 #--------------------
-# Install ROS
+# Install ROS
 #--------------------
 
 # RUN apt-get install -y locales-all
@@ -219,7 +219,7 @@ RUN cd ~/ros_catkin_ws && ./src/catkin/bin/catkin_make_isolated -DPYTHON_VERSION
 # Debug
 # RUN ls -l /opt/ros
 
-# upgrade pip
+# upgrade pip
 #RUN apt-get install python3-pyqt4
 
 # #--------------------
@@ -272,6 +272,7 @@ RUN apt-get update && apt-get install -q -y \
     && rm -rf /var/lib/apt/lists/*
 
 # install python packages
+RUN pip3 install --upgrade pip
 RUN pip3 install -U \
     argcomplete \
     flake8 \
@@ -376,6 +377,8 @@ RUN cd ros_catkin_ws/src/kobuki/kobuki_testsuite && touch CATKIN_IGNORE
 RUN cd ros_catkin_ws/src/kobuki_desktop/kobuki_qtestsuite && touch CATKIN_IGNORE
 RUN cd ros_catkin_ws/src && git clone https://github.com/ros/robot_state_publisher
 RUN cd ros_catkin_ws/src && git clone https://github.com/ros/kdl_parser
+RUN cd ros_catkin_ws/src && git clone https://matt_reachrobotics@bitbucket.org/matt_reachrobotics/mekamon_urdf_gazebo.git
+RUN cd ros_catkin_ws/src && git clone https://matt_reachrobotics@bitbucket.org/reachrobotics/msm-ros-mekamon_msgs.git
 
 # Compile the again the workspace
 RUN cd ~/ros_catkin_ws && ./src/catkin/bin/catkin_make_isolated -DPYTHON_VERSION=3.5 \

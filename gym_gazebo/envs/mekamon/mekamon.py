@@ -10,7 +10,7 @@ from std_srvs.srv import Empty
 
 from gym.utils import seeding
 from mekamon_msgs.msg import JointAngles
-from trajectory_msgs.msg import JointTrajectory
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from control_msgs.msg import JointTrajectoryControllerState
 from gazebo_msgs.srv import SetLinkState
 
@@ -89,6 +89,26 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
         """
         self._observation_msg = message
 
+    def get_trajectory_message(self, action, robot_id=0):
+        """
+        Helper function.
+        Wraps an action vector of joint angles into a JointTrajectory message.
+        The velocities, accelerations, and effort do not control the arm motion
+        """
+        # Set up a trajectory message to publish.
+        action_msg = JointTrajectory()
+        action_msg.joint_names = self.environment['joint_order']
+        # Create a point to tell the robot to move to.
+        target = JointTrajectoryPoint()
+        action_float = [float(i) for i in action]
+        target.positions = action_float
+        # These times determine the speed at which the robot moves:
+        # it tries to reach the specified target position in 'slowness' time.
+        target.time_from_start.secs = self.environment['slowness']
+        # Package the single point into a trajectory of points with length 1.
+        action_msg.points = [target]
+        return action_msg
+
     def take_observation(self):
         """
         Take observation from the environment and return it.
@@ -117,6 +137,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
                         "mekamon_msgs/state", JointTrajectoryControllerState, timeout=5)
                 except:
                     pass
+        self._pub.publish(self.get_trajectory_message(action[:12]))
         rospy.wait_for_service('/gazebo/pause_physics')
         try:
             # resp_pause = pause.call()
