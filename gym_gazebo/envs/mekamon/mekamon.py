@@ -12,6 +12,7 @@ from gym.utils import seeding
 from mekamon_msgs.msg import JointAngles
 from trajectory_msgs.msg import JointTrajectory
 from control_msgs.msg import JointTrajectoryControllerState
+from gazebo_msgs.srv import SetLinkState
 
 
 class GazeboMekamonEnv(gazebo_env.GazeboEnv):
@@ -22,6 +23,9 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
         self.pause = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
         self.reset_proxy = rospy.ServiceProxy(
             '/gazebo/reset_simulation', Empty)
+        self.set_link = rospy.ServiceProxy(
+            '/gazebo/set_link_state', SetLinkState)
+        rospy.wait_for_service('/gazebo/set_link_state')
 
         self.reward_range = (-np.inf, np.inf)
 
@@ -69,7 +73,8 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
             'initial_velocities': []
         }
 
-        self._pub = rospy.Publisher(JOINT_PUBLISHER, JointTrajectory, queue_size=1)
+        self._pub = rospy.Publisher(
+            JOINT_PUBLISHER, JointTrajectory, queue_size=1)
         self._sub = rospy.Subscriber(
             JOINT_SUBSCRIBER, JointTrajectoryControllerState, self.observation_callback)
 
@@ -107,6 +112,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
         # done = False
 
         obs_message = self._observation_msg
+        print(obs_message)
         if obs_message is None:
             # print("last_observations is empty")
             return None
@@ -122,10 +128,17 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
             while self._observation_msg is None:
                 try:
                     self._observation_msg = rospy.wait_for_message(
-                        JOINT_SUBSCRIBER, JointTrajectoryControllerState, timeout=5)
+                        "mekamon_msgs/state", JointTrajectoryControllerState, timeout=5)
                 except:
                     pass
-        return None
+        rospy.wait_for_service('/gazebo/pause_physics')
+        try:
+            # resp_pause = pause.call()
+            self.pause()
+        except (rospy.ServiceException) as e:
+            print("/gazebo/unpause_physics service call failed")
+
+        return state, reward, done, {}
 
     def reset(self):
 
