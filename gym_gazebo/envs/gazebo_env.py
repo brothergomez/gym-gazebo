@@ -21,7 +21,7 @@ class GazeboEnv(gym.Env):
         random_number = random.randint(10000, 15000)
         # self.port = "11311"#str(random_number) #os.environ["ROS_PORT_SIM"]
         self.port_gazebo = "11345" #str(random_number+1) #os.environ["ROS_PORT_SIM"]
-        self.port = str(random_number) #os.environ["ROS_PORT_SIM"]
+        self.port = 11311 #os.environ["ROS_PORT_SIM"]
         # self.port_gazebo = os.environ["GAZEBO_PORT"]
 
         os.environ["ROS_MASTER_URI"] = "http://localhost:"+self.port
