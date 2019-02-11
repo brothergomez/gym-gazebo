@@ -38,8 +38,8 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
         INITIAL_JOINTS = np.zeros(12)
 
-        JOINT_PUBLISHER = "/robot_state_publisher"
-        JOINT_SUBSCRIBER = "/robot_state_publisher"
+        JOINT_PUBLISHER = "/robot_state_publisher/robot_state_publisher"
+        JOINT_SUBSCRIBER = "/robot_state_publisher/robot_state_publisher"
 
         fl_hip_joint = "fl_hip_joint"
         fl_hiplink_joint = "fl_hiplink_joint"
