@@ -38,8 +38,8 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
         INITIAL_JOINTS = np.zeros(12)
 
-        JOINT_PUBLISHER = "/joint_states"
-        JOINT_SUBSCRIBER = "/joint_states"
+        JOINT_PUBLISHER = "mekamon_msgs/JointAngles"
+        JOINT_SUBSCRIBER = "mekamon_msgs/JointAngles"
 
         fl_hip_joint = "fl_hip_joint"
         fl_hiplink_joint = "fl_hiplink_joint"
@@ -134,7 +134,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
             while self._observation_msg is None:
                 try:
                     self._observation_msg = rospy.wait_for_message(
-                        "/joint_states", JointTrajectoryControllerState, timeout=5)
+                        "mekamon_msgs/JointAngles", JointTrajectoryControllerState, timeout=5)
                 except:
                     pass
         self._pub.publish(self.get_trajectory_message(action[:12]))
