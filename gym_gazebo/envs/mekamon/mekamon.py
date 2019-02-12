@@ -35,7 +35,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
         low = -np.pi/2.0 * np.ones(12)
         high = np.pi/2.0 * np.ones(12)
 
-        self.action_space = spaces.Box(low, high, dtype='float32')
+        self.action_space = spaces.MultiDiscrete(np.array([360]*12))
 
         INITIAL_JOINTS = np.zeros(12)
 
