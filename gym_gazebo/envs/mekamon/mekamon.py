@@ -78,7 +78,7 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
         self._pub = rospy.Publisher(
             JOINT_PUBLISHER, JointTrajectory, queue_size=1)
         self._sub = rospy.Subscriber(
-            JOINT_SUBSCRIBER, JointTrajectoryControllerState, self.observation_callback)
+            JOINT_SUBSCRIBER, JointTrajectory, self.observation_callback)
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
