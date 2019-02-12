@@ -32,8 +32,8 @@ class GazeboMekamonEnv(gazebo_env.GazeboEnv):
 
         self._seed()
 
-        low = 0
-        high = 65535
+        low = 0 * np.ones(12)
+        high = 65535 * np.ones(12)
 
         self.action_space = spaces.Box(low, high, dtype=np.uint16)
 
