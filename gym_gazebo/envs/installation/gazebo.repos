@@ -43,14 +43,14 @@ repositories:
 #    type: git
 #    url: https://github.com/stonier/ecl_tools
 #    version: devel
-#  driver_base:
-#    type: git
-#    url: https://github.com/ros-drivers/driver_common.git
-#    version: indigo-devel
-#  gazebo_ros_pkgs:
-#    type: git
-#    url: https://github.com/ros-simulation/gazebo_ros_pkgs
-#    version: indigo-devel
+  driver_base:
+    type: git
+    url: https://github.com/ros-drivers/driver_common.git
+    version: indigo-devel
+  gazebo_ros_pkgs:
+    type: git
+    url: https://github.com/ros-simulation/gazebo_ros_pkgs
+    version: indigo-devel
 #  glog_catkin:
 #    type: git
 #    url: https://github.com/ethz-asl/glog_catkin.git
@@ -63,10 +63,10 @@ repositories:
 #    type: git
 #    url: https://github.com/ros-perception/image_common.git
 #    version: hydro-devel
-#  joystick_drivers:
-#    type: git
-#    url: https://github.com/ros-drivers/joystick_drivers.git
-#    version: indigo-devel
+  joystick_drivers:
+    type: git
+    url: https://github.com/ros-drivers/joystick_drivers.git
+    version: indigo-devel
 #  kobuki:
 #    type: git
 #    url: https://github.com/yujinrobot/kobuki
@@ -166,4 +166,12 @@ repositories:
   mekamon_urdf:
     type: git
     url: https://bitbucket.org/matt_reachrobotics/mekamon_urdf_gazebo
+    version: master
+  mekamon_remote:
+    type: git
+    url: https://bitbucket.org/reachrobotics/msm-ros-mekamon_remote
+    version: master
+  mekamon_control:
+    type: git
+    url: https://matt_reachrobotics@bitbucket.org/matt_reachrobotics/mekamon_controller
     version: master

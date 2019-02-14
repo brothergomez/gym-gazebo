@@ -3,7 +3,7 @@
   <arg name="gui" default="false"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="use_sim_time" value="false"/>
+    <arg name="use_sim_time" value="true"/>
     <arg name="debug" value="false"/>
     <arg name="gui" value="$(arg gui)" />
   </include>
@@ -21,12 +21,17 @@
               -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) 
               -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
 
-  <!-- ignore_timestamp=true: 
-        don't publish at fixed rate, publish whenever a JointState msg comes in -->
-  <param name="ignore_timestamp" value="true" type="bool" />
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find mekamon_control)/config/mekamon_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/mekamon" args="fl_knee_position_controller fl_hiplink_position_controller fl_hip_position_controller fr_knee_position_controller fr_hiplink_position_controller fr_hip_position_controller bl_knee_position_controller bl_hiplink_position_controller bl_hip_position_controller br_knee_position_controller br_hiplink_position_controller br_hip_position_controller joint_state_controller"/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0" />
+    <remap from="/joint_states" to="/mekamon/joint_states" />
   </node>
+
 
 
 

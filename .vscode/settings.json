@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "/home/matt/.venv/py2_std/bin/python",
+    "python.linting.pylintEnabled": true
+}

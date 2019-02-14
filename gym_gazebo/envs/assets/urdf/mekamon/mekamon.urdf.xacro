@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<robot name="mekamon" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="mekamon" 
+  xmlns:xacro="http://ros.org/wiki/xacro">
 
   <!-- units are metres & Kg-->
 
@@ -120,6 +121,12 @@
     <child link="head"/>
     <origin xyz="0.03 0.00 0.04" />
   </joint>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/mekamon</robotNamespace>
+    </plugin>
+  </gazebo>
 
   <!-- Leg builder macro 
   arg 'prefix' is link name prefix.
@@ -273,6 +280,37 @@
       </collision>
       <xacro:sphere_inertial mass="0.01" radius="${footradius}"/>
     </link>
+
+    <transmission name="${prefix}_hip_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_hip_joint">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_hip_joint_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <transmission name="${prefix}_hiplink_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_hiplink_joint">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_hiplink_joint_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <transmission name="${prefix}_knee_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_knee_joint">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_knee_joint_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
 
   </xacro:macro>
 
